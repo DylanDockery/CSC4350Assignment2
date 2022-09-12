@@ -20,7 +20,11 @@ if args.p != 8000:
     serverPort=args.p
 else:
     serverPort=8000
-
+    
+if(args.t not in ('TCP','UDP')):
+    print('INVALID PROTOCOL DEFAULTED TO TCP')
+    
+    
 #TCP handling 
 if args.t == 'UDP':
     serverSocket = socket(AF_INET,SOCK_DGRAM)
@@ -50,8 +54,6 @@ if args.t == 'UDP':
 
 #UDP handling
 else:
-    if(args.t !='TCP'):
-        print('INVALID PROTOCOL DEFAULTED TO TCP')
     serverSocket = socket(AF_INET,SOCK_STREAM)
     serverSocket.bind(('',serverPort))
     serverSocket.listen(1)
