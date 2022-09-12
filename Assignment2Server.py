@@ -1,16 +1,27 @@
+#Dylan Dockery
+#Server portion of client server spplication
+#libraries needed : socket, argparse, datetime
+#instructions: 
+#Start via commandline. Commandline parameters are as follows: -t --- Communication protocol that can be set to either TCP or UDP. Default is TCP. 
+#-p --- Port used for server. Default is 8000
+
 from socket import *
 import argparse
 from datetime import datetime
+
+#command line argmuent declaration
 parser = argparse.ArgumentParser(description='Server')
 parser.add_argument('-t', type=str, default='TCP', help='Communication protocol that can be set to either TCP or UDP. Default is TCP')
 parser.add_argument('-p', type=int, default=8000,help='Port used for server. Default is 8000')
 args = parser.parse_args()
 
+#set port
 if args.p != 8000:
     serverPort=args.p
 else:
     serverPort=8000
 
+#TCP handling 
 if args.t == 'UDP':
     serverSocket = socket(AF_INET,SOCK_DGRAM)
     serverSocket.bind(('',serverPort))
@@ -35,7 +46,7 @@ if args.t == 'UDP':
     
 
 
-
+#UDP handling
 else:
     if(args.t !='TCP'):
         print('INVALID PROTOCOL DEFAULTED TO TCP')
