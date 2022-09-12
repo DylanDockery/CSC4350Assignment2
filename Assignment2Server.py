@@ -25,7 +25,7 @@ if(args.t not in ('TCP','UDP')):
     print('INVALID PROTOCOL DEFAULTED TO TCP')
     
     
-#TCP handling 
+#UDP handling 
 if args.t == 'UDP':
     serverSocket = socket(AF_INET,SOCK_DGRAM)
     serverSocket.bind(('',serverPort))
@@ -52,7 +52,7 @@ if args.t == 'UDP':
     
 
 
-#UDP handling
+#TCP handling
 else:
     serverSocket = socket(AF_INET,SOCK_STREAM)
     serverSocket.bind(('',serverPort))
