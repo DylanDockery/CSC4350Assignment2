@@ -34,10 +34,12 @@ if args.t == 'UDP':
         elif message.decode() == 'PORT':
             returnMessage = str(clientAddress[1])
         else:
+            #time from client and current time 
             time=datetime.now()
             time_sec=time.timestamp()
             senttime=float(message.decode().split('_')[1])
             deltatime= time_sec - senttime
+            
             returnMessage = str(time)+'_'+str(deltatime)+'_'+str(time_sec)
 
             
@@ -63,10 +65,12 @@ else:
         elif message == 'PORT':
             returnMessage = str(addr[1])
         else:
+            #time from client and current time
             time=datetime.now()
             time_sec=time.timestamp()
             senttime=float(message.split('_')[1])
             deltatime= time_sec - senttime
+            
             returnMessage = str(time)+'_'+str(deltatime)+'_'+str(time_sec)
 
         connectionSocket.send(returnMessage.encode())
