@@ -9,35 +9,56 @@ from socket import *
 import argparse
 from datetime import datetime
 
+#logs requests from clients in the form DATETIME REQUEST_METHOD RESPONSE_CODE in serverLog.txt
 def logRequest(requestMethod,responseCode):
     f=open("serverLog.txt","a")
-    f.write(str(datetime.now())+' '+requestMethod+' '+responseCode)
+    f.write(str(datetime.now())+' '+requestMethod+' '+responseCode+'\n')
     f.close()
 
-def response(message):
-    requestMethod=message.decode()
+#determines response to client
+def response(message,clientAddress):
+    #variables for indices during string processing
+    IPindex=0
+    portIndex=1
+    sentTimeIndex=1
+    methodIndex=0
+
+    okCode='OK'
+    invalidCode='INVALID'
+    requestMethod=message.split('_')[methodIndex]
+
+    #IP method handling
     if requestMethod == 'IP':
-        logRequest(requestMethod,'OK')
-        return returnMessage = 'OK_' + clientAddress[0]
+        logRequest(requestMethod,okCode)
+        returnMessage = okCode+'_' + clientAddress[IPindex]
+    
+    #PORT method handling
     elif requestMethod == 'PORT':
-        logRequest(requestMethod,'OK')
-        return returnMessage = 'OK_'+ str(clientAddress[1])
+        logRequest(requestMethod,okCode)
+        returnMessage = okCode+'_'+ str(clientAddress[portIndex])
+        return returnMessage
+
+    #TIMEDELAY method handling
     elif requestMethod == 'TIMEDELAY':
-        #time from client and current time 
+        #time from client and current time and returns invalid if date time not included
         try:
+            messageSplit=message.split('_')
             time=datetime.now()
             time_sec=time.timestamp()
-            senttime=float(message.decode().split('_')[1])
+            senttime=float(messageSplit[sentTimeIndex])
             deltatime= time_sec - senttime
-            logRequest(requestMethod,'OK')
-            return returnMessage = 'OK_'+str(time)+'_'+str(deltatime)+'_'+str(time_sec)
+            logRequest(messageSplit[methodIndex],okCode)
+            returnMessage = okCode+'_'+str(time)+'_'+str(deltatime)+'_'+str(time_sec)
+            return returnMessage
         except:
-            logRequest(requestMethod,'INVALID')
-            return returnMessage = 'INVALID'
-            
+            logRequest(requestMethod,invalidCode)
+            returnMessage = invalidCode
+
+    #Hand    
     else:
-        logRequest(requestMethod,'INVALID')
-        return returnMessage = 'INVALID'
+        logRequest(requestMethod,invalidCode)
+        returnMessage = invalidCode
+    return returnMessage
 
     
 #command line argmuent declaration
@@ -63,7 +84,7 @@ if args.t == 'UDP':
     print("The server is ready to receive")
     while True:
         message, clientAddress = serverSocket.recvfrom(2048)
-        returnMesage= response(message)
+        returnMessage= response(message.decode(),clientAddress)
         serverSocket.sendto(returnMessage.encode(),clientAddress)
     
 
@@ -78,7 +99,7 @@ else:
         
         connectionSocket, addr = serverSocket.accept()
         message = connectionSocket.recv(1024).decode()
-        returnMesage= response(message)
+        returnMessage= response(message,addr)
 
         connectionSocket.send(returnMessage.encode())
         connectionSocket.close()

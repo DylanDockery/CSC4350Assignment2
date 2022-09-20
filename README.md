@@ -20,5 +20,9 @@ Commandline parameters are as follows:
 -p --- Port for server. Default is 8000.
 -i --- IP address for server Default is 127.0.0.1
 
+Reponse codes:
+serve logs and returns a OK if valid method and INVALID if method is nort recognized
+logs to serverLog.txt
+
 Potential Improvements:
 Time out on client if server is not active rather than having to use the keyboard interrupt
